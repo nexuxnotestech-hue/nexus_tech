@@ -1,0 +1,192 @@
+
+# ============================================================
+#  NEXUS TECH — BACKEND SCRATCHPAD
+#  Fill in every section below so I can build the full backend
+# ============================================================
+
+
+# ─────────────────────────────────────────
+# 1. PROJECT OVERVIEW
+# ─────────────────────────────────────────
+Project Name        :
+Project Description :
+Project Type        : (e.g. REST API / GraphQL / WebSocket / Hybrid)
+Tech Stack          : (e.g. Node.js + Express + MongoDB)
+Port                : (e.g. 5000)
+
+
+# ─────────────────────────────────────────
+# 2. DATABASE
+# ─────────────────────────────────────────
+Database Type       : (e.g. MongoDB / PostgreSQL / MySQL / SQLite)
+Database Name       :
+ORM / ODM           : (e.g. Mongoose / Prisma / Sequelize)
+Cloud or Local      : (e.g. MongoDB Atlas / Local)
+Connection String   : (paste here or write "from .env")
+
+
+# ─────────────────────────────────────────
+# 3. AUTHENTICATION & AUTHORIZATION
+# ─────────────────────────────────────────
+Auth Strategy       : (e.g. JWT / Session / OAuth / None)
+Token Expiry        : (e.g. 7d / 1h)
+Refresh Token       : (Yes / No)
+Roles               : (e.g. admin, user, moderator)
+Password Hashing    : (e.g. bcrypt)
+Protected Routes    : (Yes / No — list them below if yes)
+
+
+# ─────────────────────────────────────────
+# 4. USER ROLES & PERMISSIONS
+# ─────────────────────────────────────────
+# List each role and what it can do
+# Example:
+#   admin  → full CRUD on everything
+#   user   → read-only + own profile
+#   vendor → manage own products
+
+Role 1 :
+Role 2 :
+Role 3 :
+
+
+# ─────────────────────────────────────────
+# 5. MODELS / SCHEMAS
+# ─────────────────────────────────────────
+# For each model, list the fields and their types
+# Example:
+#   User: name(String), email(String, unique), password(String), role(String), createdAt(Date)
+
+Model 1 Name   :
+Model 1 Fields :
+
+Model 2 Name   :
+Model 2 Fields :
+
+Model 3 Name   :
+Model 3 Fields :
+
+Model 4 Name   :
+Model 4 Fields :
+
+Model 5 Name   :
+Model 5 Fields :
+
+# (add more as needed)
+
+
+# ─────────────────────────────────────────
+# 6. API ROUTES
+# ─────────────────────────────────────────
+# List all routes: METHOD | Path | Description | Auth Required?
+# Example:
+#   POST   | /api/auth/register       | Register user         | No
+#   POST   | /api/auth/login          | Login user            | No
+#   GET    | /api/users               | Get all users         | Admin only
+#   PUT    | /api/users/:id           | Update user           | Auth
+
+Route 1  :
+Route 2  :
+Route 3  :
+Route 4  :
+Route 5  :
+Route 6  :
+Route 7  :
+Route 8  :
+Route 9  :
+Route 10 :
+
+# (add more as needed)
+
+
+# ─────────────────────────────────────────
+# 7. MIDDLEWARE
+# ─────────────────────────────────────────
+# Check all that apply and add custom ones
+[ ] CORS
+[ ] Rate Limiting         (limit: )
+[ ] Request Body Parser   (JSON / FormData / Both)
+[ ] Morgan (logging)
+[ ] Helmet (security headers)
+[ ] Auth Middleware (JWT verify)
+[ ] Role-based Access Control (RBAC)
+[ ] Error Handler (global)
+[ ] File Upload           (library: e.g. Multer / Cloudinary)
+[ ] Custom:
+
+
+# ─────────────────────────────────────────
+# 8. FILE UPLOADS (if any)
+# ─────────────────────────────────────────
+File Upload Needed  : (Yes / No)
+Upload Library      : (e.g. Multer / Cloudinary / AWS S3)
+Storage             : (Local disk / Cloud)
+Allowed File Types  : (e.g. jpg, png, pdf)
+Max File Size       : (e.g. 5MB)
+Upload Field Names  : (e.g. avatar, document, thumbnail)
+
+
+# ─────────────────────────────────────────
+# 9. EMAIL / NOTIFICATIONS (if any)
+# ─────────────────────────────────────────
+Email Needed        : (Yes / No)
+Email Library       : (e.g. Nodemailer / SendGrid / Resend)
+Email Triggers      : (e.g. registration, password reset, order confirmation)
+SMS / Push Needed   : (Yes / No — provider: )
+
+
+# ─────────────────────────────────────────
+# 10. PAYMENT INTEGRATION (if any)
+# ─────────────────────────────────────────
+Payment Needed      : (Yes / No)
+Payment Gateway     : (e.g. Stripe / Razorpay / PayPal)
+Features            : (e.g. one-time payment, subscription, refund)
+
+
+# ─────────────────────────────────────────
+# 11. THIRD-PARTY INTEGRATIONS (if any)
+# ─────────────────────────────────────────
+# List any external APIs or services
+Integration 1 :
+Integration 2 :
+Integration 3 :
+
+
+# ─────────────────────────────────────────
+# 12. ENVIRONMENT VARIABLES (.env)
+# ─────────────────────────────────────────
+# List all .env keys needed (do NOT put real secrets here)
+# Example:
+#   PORT=5000
+#   MONGO_URI=...
+#   JWT_SECRET=...
+#   CLOUDINARY_API_KEY=...
+
+Variables needed:
+-
+-
+-
+-
+
+
+# ─────────────────────────────────────────
+# 13. ERROR HANDLING STRATEGY
+# ─────────────────────────────────────────
+Global Error Handler : (Yes / No)
+Custom Error Classes : (Yes / No)
+Validation Library   : (e.g. Joi / Zod / express-validator / None)
+
+
+# ─────────────────────────────────────────
+# 14. EXTRA FEATURES / NOTES
+# ─────────────────────────────────────────
+# Anything else I should know?
+# e.g. Pagination, Search, Filtering, Sorting, Soft Delete, Audit Logs, etc.
+
+-
+-
+-
+
+# ============================================================
+#  END OF SCRATCHPAD — Fill in and share back!
+# ============================================================
