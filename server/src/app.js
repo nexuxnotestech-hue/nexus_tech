@@ -30,8 +30,9 @@ app.use(helmet());
 app.use(
   cors({
     origin: process.env.CLIENT_URL 
-      ? process.env.CLIENT_URL.split(",") 
+      ? process.env.CLIENT_URL.split(",").map(o => o.trim()) 
       : "*",
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
