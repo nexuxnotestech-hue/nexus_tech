@@ -29,7 +29,9 @@ app.use(helmet());
 // CORS — allow frontend origin
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "*",
+    origin: process.env.CLIENT_URL 
+      ? process.env.CLIENT_URL.split(",") 
+      : "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
