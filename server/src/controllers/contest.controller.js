@@ -88,25 +88,37 @@ const joinContest = asyncHandler(async (req, res) => {
 
   // Award participation points
   if (contest.pointsForParticipation > 0) {
-    const wallet = await Wallet.findOne({ user: req.user._id });
+    const points = contest.pointsForParticipation;
+    
+    // Atomic update to wallet
+    const wallet = await Wallet.findOneAndUpdate(
+      { user: req.user._id },
+      { 
+        $inc: { balance: points },
+        $push: {
+          transactions: {
+            type: "credit",
+            amount: points,
+            description: `Participation in: ${contest.title}`,
+            reference: contest._id.toString(),
+            balanceAfter: 0, // Placeholder, see note below
+          }
+        }
+      },
+      { new: true }
+    );
+
     if (wallet) {
-      wallet.balance += contest.pointsForParticipation;
-      wallet.transactions.push({
-        type: "credit",
-        amount: contest.pointsForParticipation,
-        description: `Participation in: ${contest.title}`,
-        reference: contest._id.toString(),
-        balanceAfter: wallet.balance,
-      });
+      // Fix balanceAfter in the last transaction
+      const lastTx = wallet.transactions[wallet.transactions.length - 1];
+      lastTx.balanceAfter = wallet.balance;
       await wallet.save();
 
-      // Update global leaderboard
-      await User.findByIdAndUpdate(req.user._id, {
-        $inc: { totalPoints: contest.pointsForParticipation },
-      });
+      // Atomic update to user and leaderboard
+      await User.findByIdAndUpdate(req.user._id, { $inc: { totalPoints: points } });
       await Leaderboard.findOneAndUpdate(
         { user: req.user._id },
-        { $inc: { totalPoints: contest.pointsForParticipation, contestsParticipated: 1 } }
+        { $inc: { totalPoints: points, contestsParticipated: 1 } }
       );
     }
   }
@@ -138,9 +150,12 @@ const submitAnswers = asyncHandler(async (req, res) => {
   let correctCount = 0;
   const gradedAnswers = answers.map((ans) => {
     const question = contest.questions[ans.questionIndex];
-    if (!question) return { ...ans, isCorrect: false, pointsEarned: 0 };
+    if (!question) {
+       // Silently ignore or handle invalid index
+       return { ...ans, isCorrect: false, pointsEarned: 0 };
+    }
     const isCorrect = question.correctAnswer === ans.selectedOption;
-    const pts = isCorrect ? question.points || 10 : 0;
+    const pts = isCorrect ? (question.points || 10) : 0;
     totalScore += pts;
     if (isCorrect) correctCount++;
     return { ...ans, isCorrect, pointsEarned: pts };

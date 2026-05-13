@@ -41,32 +41,58 @@ const redeemReward = asyncHandler(async (req, res) => {
   );
   if (alreadyRedeemed) throw new ApiError(400, "You have already redeemed this reward");
 
-  // Check wallet balance
-  const wallet = await Wallet.findOne({ user: req.user._id });
-  if (!wallet) throw new ApiError(404, "Wallet not found");
-  if (wallet.balance < reward.pointsCost) {
-    throw new ApiError(400, `Insufficient points. You need ${reward.pointsCost} but have ${wallet.balance}`);
+  // Deduct points and stock atomically
+  const wallet = await Wallet.findOneAndUpdate(
+    { user: req.user._id, balance: { $gte: reward.pointsCost } },
+    { 
+      $inc: { balance: -reward.pointsCost },
+      $push: {
+        transactions: {
+          type: "debit",
+          amount: reward.pointsCost,
+          description: `Redeemed reward: ${reward.title}`,
+          reference: reward._id.toString(),
+          balanceAfter: 0, // updated below
+        }
+      }
+    },
+    { new: true }
+  );
+
+  if (!wallet) {
+    throw new ApiError(400, "Insufficient points or wallet error");
   }
 
-  // Deduct points
-  wallet.balance -= reward.pointsCost;
-  wallet.transactions.push({
-    type: "debit",
-    amount: reward.pointsCost,
-    description: `Redeemed reward: ${reward.title}`,
-    reference: reward._id.toString(),
-    balanceAfter: wallet.balance,
-  });
+  // Update balanceAfter
+  const lastTx = wallet.transactions[wallet.transactions.length - 1];
+  lastTx.balanceAfter = wallet.balance;
   await wallet.save();
 
-  // Update user total points
-  await User.findByIdAndUpdate(req.user._id, { $inc: { totalPoints: -reward.pointsCost } });
+  // Deduct stock atomically if limited
+  if (reward.stock !== -1) {
+    const updatedReward = await Reward.findOneAndUpdate(
+      { _id: reward._id, totalRedeemed: { $lt: reward.stock } },
+      { $inc: { totalRedeemed: 1 } },
+      { new: true }
+    );
+    if (!updatedReward) {
+      // Rollback wallet if stock check fails (simplified rollback)
+      await Wallet.findByIdAndUpdate(req.user._id, { $inc: { balance: reward.pointsCost }, $pop: { transactions: 1 } });
+      throw new ApiError(400, "Reward just went out of stock");
+    }
+  } else {
+    reward.totalRedeemed += 1;
+    await reward.save();
+  }
 
   // Record redemption
   const couponCode = `NX-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
-  reward.redeemedBy.push({ user: req.user._id, couponCode });
-  reward.totalRedeemed += 1;
-  await reward.save();
+  await Reward.findByIdAndUpdate(reward._id, {
+    $push: { redeemedBy: { user: req.user._id, couponCode } }
+  });
+
+  // Update user total points
+  await User.findByIdAndUpdate(req.user._id, { $inc: { totalPoints: -reward.pointsCost } });
 
   return res.status(200).json(
     new ApiResponse(200, {

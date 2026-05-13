@@ -21,11 +21,10 @@ const seedData = async () => {
     console.log("Cleared existing data.");
 
     // 2. Create Admin User
-    const adminPassword = await bcrypt.hash("admin123", 12);
     const admin = await User.create({
       name: "Super Admin",
       email: "admin@nexustech.com",
-      password: adminPassword,
+      password: "admin123",
       role: "admin",
       authProvider: "local",
     });

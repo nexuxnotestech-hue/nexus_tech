@@ -25,12 +25,10 @@ const register = asyncHandler(async (req, res) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new ApiError(400, "Email already registered");
 
-  const hashedPassword = await bcrypt.hash(password, 12);
-
   const user = await User.create({
     name,
     email,
-    password: hashedPassword,
+    password,
     college,
     department,
     authProvider: "local",
