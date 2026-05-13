@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { login as loginApi, register as registerApi, getProfile } from '../api/auth.api';
+import { login as loginApi, register as registerApi, getProfile, firebaseLogin } from '../api/auth.api';
+import { signInWithGoogle } from '../lib/firebase';
 
 const AuthContext = createContext();
 
@@ -59,13 +60,32 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const googleLogin = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const { idToken } = await signInWithGoogle();
+      const res = await firebaseLogin({ idToken });
+      const { token, user } = res.data.data;
+      localStorage.setItem('token', token);
+      setUser(user);
+      return { success: true };
+    } catch (err) {
+      console.error("Google Login Context Error:", err);
+      setError(err.response?.data?.message || 'Google login failed');
+      return { success: false, message: err.response?.data?.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, error, login, register, logout, googleLogin }}>
       {children}
     </AuthContext.Provider>
   );

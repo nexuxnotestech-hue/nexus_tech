@@ -11,3 +11,7 @@ export const register = async (userData) => {
 export const getProfile = async () => {
   return API.get("/api/auth/profile");
 };
+
+export const firebaseLogin = async (data) => {
+  return API.post("/api/auth/firebase-login", data);
+};

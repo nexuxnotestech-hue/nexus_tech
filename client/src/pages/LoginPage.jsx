@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, loading, error } = useAuth();
+  const { login, googleLogin, loading, error } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -57,9 +57,22 @@ const LoginPage = () => {
             />
           </div>
           <button 
+            type="button"
+            onClick={async () => {
+              const res = await googleLogin();
+              if (res.success) navigate('/');
+            }}
+            disabled={loading}
+            className="w-full py-4 bg-white hover:bg-gray-50 text-black font-semibold rounded-xl transition border border-gray-200 flex items-center justify-center gap-3 disabled:opacity-50"
+          >
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
+            Continue with Google
+          </button>
+
+          <button 
             type="submit"
             disabled={loading}
-            className="w-full py-4 mt-6 bg-primary hover:bg-primaryLight text-white font-bold rounded-xl transition shadow-lg shadow-primary/20 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-4 bg-primary hover:bg-primaryLight text-white font-bold rounded-xl transition shadow-lg shadow-primary/20 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Logging In...' : 'Log In'}
           </button>
